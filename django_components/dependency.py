@@ -5,17 +5,21 @@ from nameko.extensions import DependencyProvider
 
 
 class DjangoModels(DependencyProvider):
-    def get_settings_path(self) -> str:
-        return "{}.settings".format(settings.ROOT_URLCONF.split(".")[0])
+    def ensure_django_settings(self):
+        if not os.environ.get("DJANGO_SETTINGS_MODULE"):
+            raise ModuleNotFoundError(
+                "Could not connect to django models. "
+                "You need to specify DJANGO_SETTINGS_MODULE in your PATH."
+            )
 
     def setup(self):
         """
         Initialize the dependency
         """
+        self.ensure_django_settings()
+
         import django
 
-        if not os.environ.get("DJANGO_SETTINGS_MODULE"):
-            os.environ.setdefault("DJANGO_SETTINGS_MODULE", self.get_settings_path())
         django.setup()
 
     def get_dependency(self, worker_ctx):

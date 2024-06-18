@@ -4,7 +4,7 @@ from abc import ABC
 from nameko.rpc import rpc
 from django_nameko import get_pool
 
-from django_components.nameko import DjangoModels
+from django_components.dependency import DjangoModels
 
 
 class ComponentFacade(ABC):
